@@ -115,11 +115,15 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!IsGrounded())
         {
+            anim.SetBool("isFalling", true);
+            anim.SetFloat("yVelocity", rb.velocity.y);
+
             inAirTimer = inAirTimer + Time.deltaTime;
             rb.AddForce(Vector3.down * fallingSpeed * inAirTimer);
         }
         else
         {
+            anim.SetBool("isFalling", false);
             inAirTimer = 0;
         }
     }
