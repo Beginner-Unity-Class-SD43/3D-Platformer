@@ -53,6 +53,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Dialogue"",
+                    ""type"": ""Button"",
+                    ""id"": ""9b77bf5f-f3ce-4e5c-83fd-a1a46995d030"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -264,6 +273,28 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7a6fcf47-71c4-4268-a950-e150719b38de"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dialogue"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""43a8ff62-11e0-4304-b80f-2f014006baf3"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dialogue"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -275,6 +306,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_PlayerMovement_Movement = m_PlayerMovement.FindAction("Movement", throwIfNotFound: true);
         m_PlayerMovement_Sprint = m_PlayerMovement.FindAction("Sprint", throwIfNotFound: true);
         m_PlayerMovement_Jump = m_PlayerMovement.FindAction("Jump", throwIfNotFound: true);
+        m_PlayerMovement_Dialogue = m_PlayerMovement.FindAction("Dialogue", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -339,6 +371,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerMovement_Movement;
     private readonly InputAction m_PlayerMovement_Sprint;
     private readonly InputAction m_PlayerMovement_Jump;
+    private readonly InputAction m_PlayerMovement_Dialogue;
     public struct PlayerMovementActions
     {
         private @PlayerControls m_Wrapper;
@@ -346,6 +379,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @Movement => m_Wrapper.m_PlayerMovement_Movement;
         public InputAction @Sprint => m_Wrapper.m_PlayerMovement_Sprint;
         public InputAction @Jump => m_Wrapper.m_PlayerMovement_Jump;
+        public InputAction @Dialogue => m_Wrapper.m_PlayerMovement_Dialogue;
         public InputActionMap Get() { return m_Wrapper.m_PlayerMovement; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -364,6 +398,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Jump.started += instance.OnJump;
             @Jump.performed += instance.OnJump;
             @Jump.canceled += instance.OnJump;
+            @Dialogue.started += instance.OnDialogue;
+            @Dialogue.performed += instance.OnDialogue;
+            @Dialogue.canceled += instance.OnDialogue;
         }
 
         private void UnregisterCallbacks(IPlayerMovementActions instance)
@@ -377,6 +414,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Jump.started -= instance.OnJump;
             @Jump.performed -= instance.OnJump;
             @Jump.canceled -= instance.OnJump;
+            @Dialogue.started -= instance.OnDialogue;
+            @Dialogue.performed -= instance.OnDialogue;
+            @Dialogue.canceled -= instance.OnDialogue;
         }
 
         public void RemoveCallbacks(IPlayerMovementActions instance)
@@ -399,5 +439,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnMovement(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
+        void OnDialogue(InputAction.CallbackContext context);
     }
 }
