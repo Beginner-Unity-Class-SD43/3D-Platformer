@@ -16,6 +16,7 @@ public class InputManager : MonoBehaviour
     public bool jumpInput;
 
     public bool dialogueInput;
+    public bool interactInput;
 
     private void Awake()
     {
@@ -35,6 +36,9 @@ public class InputManager : MonoBehaviour
 
             playerControls.PlayerMovement.Jump.performed += i => jumpInput = true;
             playerControls.PlayerMovement.Dialogue.performed += i => dialogueInput = true;
+            playerControls.PlayerMovement.Interact.performed += i => interactInput = true;
+
+
         }
 
         playerControls.Enable();
@@ -65,11 +69,20 @@ public class InputManager : MonoBehaviour
         playerMovement.isSprinting = sprintInput;
     }
 
+    void HandleInteractInput()
+    {
+        if(interactInput) 
+        {
+            interactInput = false;
+        }
+    }
+
     public void HandleAllInputs()
     {
         HandleJumpingInput();
         HandleOnMovementInput();
         HandleSprintingInput();
+        HandleInteractInput();
     }
 
 }
