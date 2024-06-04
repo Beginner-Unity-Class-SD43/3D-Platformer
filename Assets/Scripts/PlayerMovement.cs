@@ -27,8 +27,19 @@ public class PlayerMovement : MonoBehaviour
     public float inAirTimer;
     public float fallingSpeed;
 
+    // Powerups
+    public float powerJumpHeight = 14f;
+    public float baseJumpHeight;
+    bool hasJumpPowerUp;
+    [SerializeField] float powerUpTimer = 10f;
+
+    bool hasDoubleJump;
+    int numberOfJumps = 1;
+
     private void Awake()
     {
+        baseJumpHeight = jumpHeight;
+
         inputManager = GetComponent<InputManager>();
         rb = GetComponent<Rigidbody>();
         anim = GetComponentInChildren<Animator>();
@@ -103,8 +114,11 @@ public class PlayerMovement : MonoBehaviour
 
     public void HandleJump()
     {
-        if (IsGrounded())
+        if (IsGrounded() || numberOfJumps > 1)
         {
+            rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+            numberOfJumps--;
+
             float jumpVelocity = Mathf.Sqrt(-2 * gravityIntensity * jumpHeight);
 
             rb.AddForce(0, jumpVelocity, 0, ForceMode.Impulse);
@@ -125,7 +139,18 @@ public class PlayerMovement : MonoBehaviour
         {
             anim.SetBool("isFalling", false);
             inAirTimer = 0;
+
+            if (hasDoubleJump)
+            {
+                numberOfJumps = 2;
+            }
+            else
+            {
+                numberOfJumps = 1;
+            }
+
         }
+
     }
 
     public void HandleAllMovement()
@@ -139,5 +164,36 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    public void SetPowerJump()
+    {
+        if (!hasJumpPowerUp)
+        {
+            hasJumpPowerUp = true;
+            jumpHeight = powerJumpHeight;
+            StartCoroutine(PowerJumpTimer());
+        }
+    }
+
+    IEnumerator PowerJumpTimer()
+    {
+        yield return new WaitForSeconds(powerUpTimer);
+        hasJumpPowerUp = false;
+        jumpHeight = baseJumpHeight;
+    }
+
+    public void SetDoubleJump()
+    {
+        if (!hasDoubleJump)
+        {
+            hasDoubleJump = true;
+            StartCoroutine(DoubleJumpTimer());
+        }
+    }
+
+    IEnumerator DoubleJumpTimer()
+    {
+        yield return new WaitForSeconds(powerUpTimer);
+        hasDoubleJump = false;
+    }
 
 }
